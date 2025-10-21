@@ -1,0 +1,95 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ event.name }} - Davetiye Al{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <div class="card">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-calendar-event text-primary" style="font-size: 3rem;"></i>
+                    <h1 class="h2 mt-3 fw-bold">{{ event.name }}</h1>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-calendar3 text-primary me-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Tarih ve Saat:</strong><br>
+                            {{ event.date_time|date:"d F Y, H:i" }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-geo-alt text-primary me-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Konum:</strong><br>
+                            {{ event.location }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-ticket-perforated text-primary me-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Müsait Bilet:</strong><br>
+                            <span class="badge {% if is_sold_out %}bg-danger{% elif tickets_available < 10 %}bg-warning{% else %}bg-success{% endif %} fs-6">
+                                {{ tickets_available }} / {{ event.max_tickets }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if is_sold_out %}
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Üzgünüz!</strong> Bu etkinlik için tüm biletler tükendi.
+                </div>
+                {% else %}
+                <hr class="my-4">
+                
+                <h5 class="mb-3">Davetiyenizi Oluşturun</h5>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.attendee_name.id_for_label }}" class="form-label fw-bold">
+                            {{ form.attendee_name.label }}
+                        </label>
+                        {{ form.attendee_name }}
+                        {% if form.attendee_name.errors %}
+                        <div class="text-danger mt-1">
+                            {{ form.attendee_name.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.plus_ones.id_for_label }}" class="form-label fw-bold">
+                            {{ form.plus_ones.label }}
+                        </label>
+                        {{ form.plus_ones }}
+                        <small class="form-text text-muted">
+                            Yanınızda kaç kişi getireceğinizi belirtin (örn: 0, 1, 2...)
+                        </small>
+                        {% if form.plus_ones.errors %}
+                        <div class="text-danger mt-1">
+                            {{ form.plus_ones.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-qr-code"></i> Davetiyemi Oluştur
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

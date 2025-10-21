@@ -1,0 +1,30 @@
+services:
+  # Web Service
+  - type: web
+    name: qr-ticket-system
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+    startCommand: gunicorn qr_ticket_system.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-ticket-db
+          property: connectionString
+
+databases:
+  # PostgreSQL Database
+  - name: qr-ticket-db
+    plan: free
+    databaseName: qr_ticket_system
+    user: qr_ticket_user
+

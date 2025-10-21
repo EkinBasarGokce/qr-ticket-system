@@ -1,0 +1,84 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}Davetiyeniz - {{ ticket.event.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <div class="card">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
+                    <h1 class="h3 mt-3 fw-bold">Davetiyeniz Hazır!</h1>
+                    <p class="text-muted">Aşağıdaki QR kodu etkinlikte gösteriniz</p>
+                </div>
+                
+                <div class="text-center mb-4 p-4 bg-light rounded">
+                    {% if ticket.qr_code %}
+                    <img src="{{ ticket.qr_code.url }}" alt="QR Code" class="img-fluid" style="max-width: 300px;">
+                    {% else %}
+                    <p class="text-danger">QR kod oluşturulamadı</p>
+                    {% endif %}
+                </div>
+                
+                <div class="alert alert-info d-flex align-items-center">
+                    <i class="bi bi-info-circle me-2" style="font-size: 1.5rem;"></i>
+                    <div>
+                        <small>
+                            Bu QR'ın ekran görüntüsünü kaydedin ya da yandaki butona basarak telefonunuza indirin.
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="d-grid mb-4">
+                    <a href="{% url 'download_qr' ticket.unique_id %}" class="btn btn-primary btn-lg" download>
+                        <i class="bi bi-download"></i> QR Kodunu İndir
+                    </a>
+                </div>
+                
+                <hr class="my-4">
+                
+                <h5 class="mb-3">Davetiye Detayları</h5>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong><i class="bi bi-calendar-event text-primary"></i> Etkinlik:</strong>
+                        <span>{{ ticket.event.name }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong><i class="bi bi-calendar3 text-primary"></i> Tarih:</strong>
+                        <span>{{ ticket.event.date_time|date:"d F Y, H:i" }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong><i class="bi bi-geo-alt text-primary"></i> Konum:</strong>
+                        <span>{{ ticket.event.location }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong><i class="bi bi-person text-primary"></i> İsim:</strong>
+                        <span>{{ ticket.attendee_name }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong><i class="bi bi-people text-primary"></i> Yanınızdakiler:</strong>
+                        <span>+{{ ticket.plus_ones }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <strong><i class="bi bi-hash text-primary"></i> Toplam Kişi:</strong>
+                        <span class="badge bg-primary">{{ ticket.total_attendees }}</span>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning mt-4">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Önemli:</strong> Bu QR kodu tek kullanımlıktır. Lütfen başkalarıyla paylaşmayın.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
